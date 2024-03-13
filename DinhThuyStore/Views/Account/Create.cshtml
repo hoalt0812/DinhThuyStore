@@ -1,0 +1,109 @@
+﻿@model DinhThuyStore.Lib.Dtos.AccountDto
+@{
+    ViewBag.Title = "Thêm tài khoản";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>@ViewBag.Title</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/account">Quản lý tài khoản</a></li>
+                    <li class="breadcrumb-item active">@ViewBag.Title</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="add" method="post" action="/account-create">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Họ tên <small class="text-danger">(*)</small></label>
+                                        <input id="FullName" name="FullName" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tên đăng nhập <small class="text-danger">(*)</small></label>
+                                        <input id="UserName" name="UserName" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Passwword <small class="text-danger">(*)</small></label>
+                                        <input id="Password" type="password" name="Password" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Quyền</label>
+                                        <select id="Role" name="Role" class="form-control select2" style="width: 100%;">
+                                            <option selected>Quản lý</option>
+                                            <option>Nhân viên</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="/account" class="btn btn-secondary">Trở về</a>
+                                    <button type="button" class="btn btn-success" id="btnSave">Lưu</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        $(`body`).on(`click`, `#btnSave`, function () {
+            var fullName = document.getElementById("FullName").value;
+            if (fullName.trim() == "") {
+                toastr.error('Họ tên không được để trống!', 'Thông báo');
+                return;
+            }
+            var userName = document.getElementById("UserName").value;
+            if (userName.trim() == "") {
+                toastr.error('Tên đăng nhập không được để trống!', 'Thông báo');
+                return;
+            }
+            if (/[\u0300-\u036f\s]/g.test(userName)) {
+                toastr.error('Tên đăng nhập không đúng yêu cầu!', 'Thông báo');
+                return;
+            }
+            var password = document.getElementById("Password").value;
+            if (password.trim() == "") {
+                toastr.error('Mật khẩu không được để trống!', 'Thông báo');
+                return;
+            }
+            $.ajax({
+                url: `/account-checkusername`,
+                type: `Post`,
+                data: { userName: userName },
+                success: function (rs) {
+                    if (rs == 1) {
+                        document.getElementById("add").submit();
+                    } else {
+                        toastr.error('Tên đăng nhập đã tồn tại!', 'Thông báo');
+                        return;
+                    }
+                }
+            });
+        });
+    </script>
+}

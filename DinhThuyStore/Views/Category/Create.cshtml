@@ -1,0 +1,74 @@
+﻿@model DinhThuyStore.Lib.Dtos.CategoryDto
+@{
+    ViewBag.Title = "Thêm danh mục";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>@ViewBag.Title</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/category">Quản lý danh mục</a></li>
+                    <li class="breadcrumb-item active">@ViewBag.Title</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="add" method="post" action="/category-create">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tên danh mục <small class="text-danger">(*)</small></label>
+                                        <input id="CategoryName" name="CategoryName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="/category" class="btn btn-secondary">Trở về</a>
+                                    <button type="button" class="btn btn-success" id="btnSave">Lưu</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        $(`body`).on(`click`, `#btnSave`, function () {
+            var categoryName = document.getElementById("CategoryName").value;
+            if (categoryName.trim() == "") {
+                toastr.error('Tên danh mục không được để trống!', 'Thông báo');
+                return;
+            }
+            $.ajax({
+                url: `/category-checkcategoryname`,
+                type: `Post`,
+                data: { categoryName: categoryName },
+                success: function (rs) {
+                    if (rs == 1) {
+                        document.getElementById("add").submit();
+                    } else {
+                        toastr.error('Tên danh mục đã tồn tại!', 'Thông báo');
+                        return;
+                    }
+                }
+            });
+        });
+    </script>
+}

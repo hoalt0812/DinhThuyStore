@@ -1,0 +1,76 @@
+﻿@model DinhThuyStore.Lib.Dtos.AccountDto
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="login-box">
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <h3>Cửa hàng <b>Định Thúy</b></h3>
+        </div>
+        <div class="card-body">
+            @*<form action="/account-login" method="post">*@
+            <div class="input-group mb-3">
+                <input type="text" id="UserName" class="form-control" placeholder="Tên đăng nhập">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" id="Password" class="form-control" placeholder="Mật khẩu">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="button" class="btn btn-primary btn-block btnLogin">Đăng nhập</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(`body`).on(`click`, `.btnLogin`, function () {
+                var userName = document.getElementById("UserName").value;
+                if (userName.trim() == "") {
+                    toastr.error('Tên đăng nhập không được để trống!', 'Thông báo');
+                    return;
+                }
+                var password = document.getElementById("Password").value;
+                if (password.trim() == "") {
+                    toastr.error('Mật khẩu không được để trống!', 'Thông báo');
+                    return;
+                }
+                $.ajax({
+                    url: '/account-login',
+                    type: 'Post',
+                    data: {
+                        UserName: userName,
+                        Password: password
+                    },
+                    success: function (rs) {
+                        if (rs == 1) {
+                            location.reload();
+                            return;
+                        }
+                        if (rs == -2) {
+                            toastr.error('Tên đăng nhập hoặc mật khẩu không đúng!', 'Thông báo');
+                            return;
+                        }
+                    }
+                });
+            });
+        });
+
+    </script>
+}
