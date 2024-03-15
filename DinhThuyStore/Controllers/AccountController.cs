@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace DinhThuyStore.Controllers
 {
+    [PermissionRequired]
     public class AccountController : Controller
     {
         // GET: Account

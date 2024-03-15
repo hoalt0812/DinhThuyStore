@@ -13,6 +13,7 @@ namespace DinhThuyStore.Lib
         public static AccountInterface accountInterface;
         public static CategoryInterface categoryInterface;
         public static ProductInterface productInterface;
+        public static ImageInterface imageInterface;
         private static readonly object SyncLock = new object();
 
         public static AccountInterface AccountInterface
@@ -66,6 +67,24 @@ namespace DinhThuyStore.Lib
                     }
                 }
                 return productInterface;
+            }
+        }
+
+        public static ImageInterface ImageInterface
+        {
+            get
+            {
+                if (imageInterface == null)
+                {
+                    lock (SyncLock)
+                    {
+                        if (imageInterface == null)
+                        {
+                            imageInterface = new ImageService();
+                        }
+                    }
+                }
+                return imageInterface;
             }
         }
     }

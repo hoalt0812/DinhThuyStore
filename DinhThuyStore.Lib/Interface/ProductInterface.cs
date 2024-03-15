@@ -10,5 +10,11 @@ namespace DinhThuyStore.Lib.Interface
     public interface ProductInterface
     {
         List<ProductDto> GetAll();
+        int Create(ProductDto model);
+        bool CheckProductCode(string productCode);
+        ProductDto GetByPKID (int id);
+        int Delete(int id);
+        int Update(ProductDto model);
+        List<ProductDto> GetByCategoryID(int id);
     }
 }

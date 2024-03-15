@@ -1,6 +1,6 @@
 ﻿@model DinhThuyStore.Lib.Dtos.ProductDto
 @{
-    ViewBag.Title = "Thêm sản phẩm";
+    ViewBag.Title = "Sửa sản phẩm";
 }
 
 <section class="content-header">
@@ -23,20 +23,31 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
+                @if (Model.Image.Trim() != "")
+                {
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img style="height: 300px" src="Uploads/@Model.Image" />
+                        </div>
+                    </div>
+                }
                 <div class="card">
                     <div class="card-body">
-                        <form id="add" method="post" action="/product-create" enctype="multipart/form-data">
+                        <form id="edit" method="post" action="/product-update" enctype="multipart/form-data">
+                            @Html.HiddenFor(model => model.PKID)
+                            @Html.HiddenFor(model => model.Image)
+                            @Html.HiddenFor(model => model.Quantity)
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="control-label">Mã sản phẩm <small class="text-danger">(*)</small></label>
-                                        <input id="ProductCode" name="ProductCode" class="form-control" />
+                                        <label class="control-label">Mã sản phẩm</label>
+                                        @Html.TextBoxFor(model => model.ProductCode, new { @id = "ProductCode", @class = "form-control", @readonly = "readonly" })
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Tên sản phẩm <small class="text-danger">(*)</small></label>
-                                        <input id="ProductName" name="ProductName" class="form-control" />
+                                        @Html.TextBoxFor(model => model.ProductName, new { @id = "ProductName", @class = "form-control" })
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -45,7 +56,7 @@
                                         <select id="CategoryID" name="CategoryID" class="form-control select2" style="width: 100%;">
                                             @foreach (var item in ViewBag.Category)
                                             {
-                                                <option value="@item.Value">@item.Text</option>
+                                                <option @(Model.CategoryID.ToString().Equals(item.Value) ? "selected" : "") value="@item.Value">@item.Text</option>
                                             }
                                         </select>
                                     </div>
@@ -53,7 +64,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Giá <small class="text-danger">(*)</small></label>
-                                        <input id="Price" name="Price" class="form-control" />
+                                        @Html.TextBoxFor(model => model.Price, new { @id = "Price", @class = "form-control" })
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -64,16 +75,6 @@
                                                 <input type="file" name="ImageFile" class="custom-file-input" multiple onchange="updateFileLabel(this)">
                                                 <label class="custom-file-label" id="fileLabel">Chọn ảnh</label>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" onchange="changeActive()" checked type="checkbox" id="IsActive">
-                                            <label for="IsActive" class="custom-control-label">Hiển thị</label>
                                         </div>
                                     </div>
                                 </div>
@@ -104,28 +105,10 @@
             }
         }
 
-        function changeActive() {
-            if (document.getElementById("IsActiveHidden").value == "true") {
-                document.getElementById("IsActiveHidden").value = "false"
-            } else {
-                document.getElementById("IsActiveHidden").value = "true"
-            }
-        }
-
         $(`body`).on(`click`, `#btnSave`, function () {
-            var productCode = document.getElementById("ProductCode").value;
-            if (productCode.trim() == "") {
-                toastr.error('Mã sản phẩm không được để trống!', 'Thông báo');
-                return;
-            }
             var productName = document.getElementById("ProductName").value;
             if (productName.trim() == "") {
                 toastr.error('Tên sản phẩm không được để trống!', 'Thông báo');
-                return;
-            }
-            var categoryID = document.getElementById("CategoryID").value;
-            if (categoryID.trim() == "") {
-                toastr.error('Hãy thêm danh mục!', 'Thông báo');
                 return;
             }
             var price = document.getElementById("Price").value;
@@ -133,19 +116,7 @@
                 toastr.error('Giá không được để trống!', 'Thông báo');
                 return;
             }
-            $.ajax({
-                url: `/product-checkproductcode`,
-                type: `Post`,
-                data: { productCode: productCode },
-                success: function (rs) {
-                    if (rs == 1) {
-                        document.getElementById("add").submit();
-                    } else {
-                        toastr.error('Mã sản phẩm đã tồn tại!', 'Thông báo');
-                        return;
-                    }
-                }
-            });
+            document.getElementById("edit").submit();
         });
     </script>
 }

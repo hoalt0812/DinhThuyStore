@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace DinhThuyStore.Controllers
 {
+    [PermissionRequired]
     public class CategoryController : Controller
     {
         // GET: Category
@@ -45,9 +46,20 @@ namespace DinhThuyStore.Controllers
         [Route("category-delete")]
         public JsonResult Delete(int id)
         {
+            var categories = Singleton.ProductInterface.GetByCategoryID(id);
+            if (categories.Count > 0)
+            {
+                foreach (var item in categories)
+                {
+                    if(item.Image.Trim() != "")
+                    {
+                        Singleton.ImageInterface.DeleteImage(item.Image);
+                    }
+                }
+            }
             var rs = Singleton.CategoryInterface.Delete(id);
             if (rs > 0)
-            {
+            {              
                 return Json(1, JsonRequestBehavior.AllowGet);
             }
             return Json(-2, JsonRequestBehavior.AllowGet);

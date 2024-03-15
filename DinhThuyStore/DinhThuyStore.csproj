@@ -4209,6 +4209,7 @@
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\Category\Create.cshtml" />
     <Content Include="Views\Product\Create.cshtml" />
+    <Content Include="Views\Product\Update.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DinhThuyStore.Lib\DinhThuyStore.Lib.csproj">

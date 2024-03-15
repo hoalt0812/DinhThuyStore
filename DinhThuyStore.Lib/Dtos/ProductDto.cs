@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace DinhThuyStore.Lib.Dtos
 {
@@ -18,5 +19,6 @@ namespace DinhThuyStore.Lib.Dtos
         public int Quantity { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
+        public HttpPostedFileBase ImageFile { get; set; }
     }
 }

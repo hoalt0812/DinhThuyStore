@@ -31,18 +31,19 @@
                         </a>
                     </div>
                     <div class="card-body">
-                        <table id="table" class="table table-bordered table-striped">
+                        <table id="table" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
-                                    <th>Tên danh mục</th>
-                                    <th>Mã sản phẩm</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Hình ảnh</th>
-                                    <th>Giá</th>
-                                    <th>Số lượng</th>
-                                    <th>Hiển thị</th>
-                                    <th>Ngày tạo</th>
+                                    <th style="width: 75px">STT</th>
+                                    <th style="width: 150px">Tên danh mục</th>
+                                    <th style="width: 145px">Mã sản phẩm</th>
+                                    <th style="width: 150px">Tên sản phẩm</th>
+                                    <th style="width: 135px">Hình ảnh</th>
+                                    <th style="width: 105px">Giá</th>
+                                    <th style="width: 110px">Số lượng</th>
+                                    <th style="width: 105px">Hiển thị</th>
+                                    <th style="width: 185px">Ngày tạo</th>
+                                    <th style="width: 195px">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,18 +52,42 @@
                                     int i = 1;
                                     foreach (var item in Model)
                                     {
+                                        var strCheck = item.IsActive ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
                                         <tr>
                                             <td>@i</td>
                                             <td>@item.CategoryName</td>
                                             <td>@item.ProductCode</td>
                                             <td>@item.ProductName</td>
-                                            <td>@item.Image</td>
+                                            @if (item.Image.Trim() == "")
+                                            {
+                                                <td></td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <img style="width: 100px" src="Uploads/@item.Image" />
+                                                </td>
+                                            }
                                             <td>@item.Price</td>
+
                                             <td>@item.Quantity</td>
-                                            <td>@item.IsActive</td>
+                                            <td>
+                                                <a data-id="@item.PKID" class="btnActive">
+                                                    @Html.Raw(strCheck)
+                                                </a>
+                                            </td>
                                             <td>@item.CreatedDate</td>
                                             <td>
-                                                <a class="btn btn-danger" id="btnDelete" data-id="@item.PKID">Delete</a>
+                                                <div class="d-flex flex-column">
+                                                    <a class="btn btn-info mb-2" href="/product-update?id=@item.PKID">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                        Sửa
+                                                    </a>
+                                                    <a class="btn btn-danger" id="btnDelete" data-id="@item.PKID">
+                                                        <i class="fas fa-trash"></i>
+                                                        Delete
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                         i++;
@@ -71,7 +96,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="9">Không có bản ghi nào!</td>
+                                        <td colspan="10">Không có bản ghi nào!</td>
                                     </tr>
                                 }
                             </tbody>
@@ -83,3 +108,26 @@
     </div>
 </section>
 
+@section scripts{
+    <script>
+        $(`body`).on(`click`, `#btnDelete`, function () {
+            var id = $(this).data("id");
+            var conf = confirm("Bạn có muốn xóa sản phẩm này không ?");
+            if (conf === true) {
+                $.ajax({
+                    url: `/product-delete`,
+                    type: `Post`,
+                    data: { id: id },
+                    success: function (rs) {
+                        if (rs == 1) {
+                            location.reload();
+                        } else {
+                            toastr.error('Lỗi!', 'Thông báo');
+                            return;
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
